@@ -81,6 +81,24 @@
       .intro { margin-top: 6px; font-size: 13px; }
       .stop { grid-template-columns: 60px 1fr; gap: 9px; padding: 13px 11px; }
     }
+    .vote-card { display: grid; gap: 14px; padding: 17px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: 0 3px 12px #49301b08; }
+    .vote-field { display: grid; gap: 6px; }
+    .vote-field label, .vote-choices legend { color: var(--ink); font-size: 15px; font-weight: 700; }
+    .vote-field input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font: inherit; }
+    .vote-choices { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; }
+    .vote-choices legend { margin-bottom: 8px; }
+    .vote-option { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 12px; background: white; cursor: pointer; }
+    .vote-option input { width: 18px; height: 18px; accent-color: var(--terracotta); }
+    .vote-submit { min-height: 48px; padding: 10px 18px; border: 0; border-radius: 14px; background: var(--terracotta); color: white; font: inherit; font-weight: 750; cursor: pointer; }
+    .vote-submit:disabled { opacity: .6; cursor: wait; }
+    .vote-message { min-height: 1.6em; margin: 0; color: var(--muted); font-size: 14px; }
+    .vote-results { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .vote-results li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--sand); }
+    .vote-results strong { color: var(--terracotta); font-variant-numeric: tabular-nums; }
+    #poll-open-view[hidden], #poll-ended-view[hidden], #poll-state-error[hidden] { display: none; }
+    .organizer-card { margin-top: 12px; }
+    .organizer-submit { min-height: 46px; padding: 9px 16px; border: 1px solid var(--olive); border-radius: 14px; background: white; color: var(--olive); font: inherit; font-weight: 750; cursor: pointer; }
+    .organizer-submit:disabled { opacity: .6; cursor: wait; }
   </style>
 </head>
 <body>
@@ -180,6 +198,55 @@
         </article>
       </div>
     </section>
+    <section class="day" aria-labelledby="dinner-vote-title">
+      <div class="day-heading">
+        <div class="day-number">晚餐<br>投票</div>
+        <div>
+          <h2 id="dinner-vote-title">晚餐投票</h2>
+          <p class="day-subtitle">選一個喜歡的晚餐，看看大家的票數</p>
+        </div>
+      </div>
+      <div id="poll-open-view" class="vote-card" hidden>
+        <form id="dinner-vote-form">
+          <div class="vote-field">
+            <label for="vote-nickname">暱稱</label>
+            <input id="vote-nickname" name="nickname" type="text" maxlength="32" autocomplete="nickname" required>
+          </div>
+          <fieldset class="vote-choices">
+            <legend>選擇一個晚餐選項</legend>
+            <label class="vote-option"><input type="radio" name="choice" value="牛肉麵" required><span>牛肉麵</span></label>
+            <label class="vote-option"><input type="radio" name="choice" value="自助餐"><span>自助餐</span></label>
+            <label class="vote-option"><input type="radio" name="choice" value="擔擔麵"><span>擔擔麵</span></label>
+            <label class="vote-option"><input type="radio" name="choice" value="肉圓"><span>肉圓</span></label>
+          </fieldset>
+          <button class="vote-submit" id="vote-submit" type="submit">送出投票</button>
+          <p class="vote-message" id="vote-message" role="status" aria-live="polite">投票者名單不公開顯示，只顯示票數。</p>
+        </form>
+      </div>
+      <div id="poll-ended-view" class="vote-card" hidden>
+        <h3 class="place">投票已結束</h3>
+        <p class="description">投票已關閉，以下是各選項票數。</p>
+      </div>
+      <div id="poll-state-error" class="vote-card" hidden>
+        <p class="description">目前無法確認投票狀態，請稍後重新整理。</p>
+      </div>
+      <div class="stops" style="margin-top: 10px;">
+        <article class="stop" style="display: block;">
+          <h3 class="place" style="margin-bottom: 10px;">目前票數</h3>
+          <ul class="vote-results" id="vote-results" aria-live="polite"></ul>
+        </article>
+      </div>
+      <div class="vote-card organizer-card">
+        <form id="close-poll-form">
+          <div class="vote-field">
+            <label for="close-poll-passphrase">主揪密語</label>
+            <input id="close-poll-passphrase" name="passphrase" type="password" maxlength="128" autocomplete="current-password" required>
+          </div>
+          <button class="organizer-submit" id="close-poll-submit" type="submit">結束投票（主揪用）</button>
+          <p class="vote-message" id="close-poll-message" role="status" aria-live="polite">結束後就不能再投票。</p>
+        </form>
+      </div>
+    </section>
     <section class="day" aria-labelledby="qr-title">
       <div class="day-heading">
         <div class="day-number">QR<br>碼</div>
@@ -197,6 +264,152 @@
     </section>
     <footer>時間先當作參考，留白一點，旅程更自在。</footer>
   </main>
+<script>
+  const supabaseUrl = "https://nkknmnamcnmpwxczslkz.supabase.co";
+  const publishableKey = "sb_publishable_gg-kvITL6nYxuTp1q4OT5Q_vJ61f5ob";
+  const votesEndpoint = supabaseUrl + "/rest/v1/dinner_votes";
+  const statusEndpoint = supabaseUrl + "/rest/v1/poll_status?select=ended&singleton=eq.true";
+  const closePollEndpoint = supabaseUrl + "/functions/v1/close-poll";
+  const dinnerOptions = ["牛肉麵", "自助餐", "擔擔麵", "肉圓"];
+  const pollOpenView = document.getElementById("poll-open-view");
+  const pollEndedView = document.getElementById("poll-ended-view");
+  const pollStateError = document.getElementById("poll-state-error");
+  const voteForm = document.getElementById("dinner-vote-form");
+  const voteMessage = document.getElementById("vote-message");
+  const voteResults = document.getElementById("vote-results");
+  const submitButton = document.getElementById("vote-submit");
+  const closePollForm = document.getElementById("close-poll-form");
+  const closePollMessage = document.getElementById("close-poll-message");
+  const closePollButton = document.getElementById("close-poll-submit");
+  let pollEnded = false;
+
+  function publicHeaders(extra) {
+    return Object.assign({
+      apikey: publishableKey,
+      Authorization: "Bearer " + publishableKey
+    }, extra || {});
+  }
+
+  function showCounts(rows) {
+    const counts = Object.fromEntries(dinnerOptions.map(option => [option, 0]));
+    rows.forEach(row => {
+      if (Object.prototype.hasOwnProperty.call(counts, row.choice)) counts[row.choice] += 1;
+    });
+    voteResults.replaceChildren();
+    dinnerOptions.forEach(option => {
+      const item = document.createElement("li");
+      const label = document.createElement("span");
+      const number = document.createElement("strong");
+      label.textContent = option;
+      number.textContent = counts[option] + " 票";
+      item.append(label, number);
+      voteResults.append(item);
+    });
+  }
+
+  function applyPollState(ended) {
+    pollEnded = ended;
+    pollOpenView.hidden = ended;
+    pollEndedView.hidden = !ended;
+    pollStateError.hidden = true;
+  }
+
+  async function refreshVotes() {
+    const response = await fetch(votesEndpoint + "?select=choice", {
+      headers: publicHeaders()
+    });
+    if (!response.ok) throw new Error("Could not load vote counts");
+    showCounts(await response.json());
+  }
+
+  async function refreshPollState() {
+    const response = await fetch(statusEndpoint, { headers: publicHeaders() });
+    if (!response.ok) throw new Error("Could not load poll status");
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows.length !== 1) throw new Error("Poll status is unavailable");
+    applyPollState(Boolean(rows[0].ended));
+    return pollEnded;
+  }
+
+  voteForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (pollEnded) return;
+    const formData = new FormData(voteForm);
+    const nickname = String(formData.get("nickname") || "").trim();
+    const choice = String(formData.get("choice") || "");
+    if (!nickname || !dinnerOptions.includes(choice)) return;
+
+    submitButton.disabled = true;
+    voteMessage.textContent = "投票送出中…";
+    try {
+      const response = await fetch(votesEndpoint, {
+        method: "POST",
+        headers: publicHeaders({
+          "Content-Type": "application/json",
+          Prefer: "return=minimal"
+        }),
+        body: JSON.stringify({ nickname, choice })
+      });
+      if (!response.ok) {
+        const ended = await refreshPollState().catch(() => false);
+        voteMessage.textContent = ended ? "投票已結束，無法再投票。" : "投票未成功，請確認網路後再試。";
+        return;
+      }
+      voteForm.reset();
+      await refreshVotes();
+      voteMessage.textContent = "已收到投票，票數已更新。";
+    } catch (error) {
+      voteMessage.textContent = "投票未成功，請確認網路後再試。";
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  closePollForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const passphrase = String(new FormData(closePollForm).get("passphrase") || "");
+    if (!passphrase) return;
+
+    closePollButton.disabled = true;
+    closePollMessage.textContent = "正在確認密語…";
+    try {
+      const response = await fetch(closePollEndpoint, {
+        method: "POST",
+        headers: publicHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ passphrase })
+      });
+      closePollForm.reset();
+      if (!response.ok) {
+        await refreshPollState();
+        closePollMessage.textContent = pollEnded ? "投票已結束。" : "密語不正確，投票仍開放。";
+        return;
+      }
+      await refreshPollState();
+      await refreshVotes();
+      closePollMessage.textContent = "投票已結束。";
+    } catch (error) {
+      closePollMessage.textContent = "目前無法確認密語，投票狀態未變更。";
+    } finally {
+      closePollButton.disabled = false;
+    }
+  });
+
+  async function initializePoll() {
+    try {
+      await refreshPollState();
+    } catch (error) {
+      pollOpenView.hidden = true;
+      pollEndedView.hidden = true;
+      pollStateError.hidden = false;
+      return;
+    }
+    refreshVotes().catch(() => {
+      voteMessage.textContent = "目前無法載入票數，請稍後重新整理。";
+    });
+  }
+
+  initializePoll();
+</script>
 </body>
 </html>
 
