@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5efe5">
+  <title>回味之旅｜台南兩天一夜</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #342c27;
+      --muted: #75695f;
+      --paper: #fffdf9;
+      --sand: #f5efe5;
+      --terracotta: #b95f43;
+      --line: #eadfd2;
+      --olive: #68735a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--sand);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans TC", sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+    .page { width: min(100% - 28px, 720px); margin: 0 auto; padding: 26px 0 48px; }
+    header {
+      position: relative;
+      overflow: hidden;
+      padding: 32px 24px 30px;
+      border-radius: 24px;
+      color: #fffaf3;
+      background: linear-gradient(135deg, #9c4c37, #c77a50);
+      box-shadow: 0 12px 30px #6b39251c;
+    }
+    header::after {
+      content: "漫步・吃吃・慢慢來";
+      position: absolute;
+      right: -8px;
+      bottom: -14px;
+      color: #ffffff18;
+      font-size: clamp(24px, 8vw, 48px);
+      font-weight: 800;
+      white-space: nowrap;
+      transform: rotate(-8deg);
+    }
+    .eyebrow { margin: 0 0 6px; color: #ffe5c9; font-size: 14px; letter-spacing: .12em; }
+    h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(32px, 9vw, 46px); line-height: 1.2; letter-spacing: .04em; }
+    .intro { position: relative; z-index: 1; max-width: 30em; margin: 14px 0 0; color: #fff4e8; font-size: 16px; }
+    .note { margin: 18px 2px 24px; color: var(--muted); font-size: 14px; }
+    .day { margin-top: 22px; }
+    .day-heading { display: flex; align-items: center; gap: 12px; margin: 0 2px 12px; }
+    .day-number { display: grid; width: 48px; height: 48px; flex: 0 0 48px; place-items: center; border-radius: 16px; color: white; background: var(--olive); font-size: 14px; font-weight: 750; line-height: 1.2; text-align: center; }
+    .day:nth-of-type(2) .day-number { background: var(--terracotta); }
+    h2 { margin: 0; font-size: 22px; line-height: 1.25; }
+    .day-subtitle { margin: 3px 0 0; color: var(--muted); font-size: 14px; }
+    .stops { display: grid; gap: 10px; }
+    .stop { display: grid; grid-template-columns: 68px 1fr; gap: 12px; padding: 15px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: 0 3px 12px #49301b08; }
+    .time { align-self: start; padding-top: 2px; color: var(--terracotta); font-size: 14px; font-weight: 750; font-variant-numeric: tabular-nums; }
+    .place { margin: 0; font-size: 18px; line-height: 1.4; }
+    .description { margin: 5px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
+    footer { margin-top: 28px; padding: 16px 8px 0; border-top: 1px solid #ddcfbf; color: var(--muted); font-size: 14px; text-align: center; }
+    @media (min-width: 600px) {
+      .page { padding-top: 42px; }
+      header { padding: 40px 36px 38px; }
+      .stop { grid-template-columns: 82px 1fr; padding: 18px 20px; }
+    }
+    @media (max-width: 360px) {
+      body { font-size: 16px; }
+      .page { width: min(100% - 20px, 720px); }
+      header { padding: 26px 19px; }
+      .stop { grid-template-columns: 60px 1fr; gap: 9px; padding: 13px 11px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <p class="eyebrow">台南・兩天一夜</p>
+      <h1>回味之旅</h1>
+      <p class="intro">第一天逛老城、第二天慢慢走。兩天一夜的行程一目了然。</p>
+    </header>
+
+    <p class="note">店名、景點與時間目前都是示意，出發前再一起換成實際安排。</p>
+
+    <section class="day" aria-labelledby="day-one-title">
+      <div class="day-heading">
+        <div class="day-number">第一<br>天</div>
+        <div>
+          <h2 id="day-one-title">老城散步日</h2>
+          <p class="day-subtitle">先從巷弄與小吃開始</p>
+        </div>
+      </div>
+      <div class="stops">
+        <article class="stop">
+          <time class="time" datetime="09:30">09:30</time>
+          <div><h3 class="place">慢慢早餐店（示意）</h3><p class="description">吃份在地早餐，為今天的散步補充元氣。</p></div>
+        </article>
+        <article class="stop">
+          <time class="time" datetime="11:00">11:00</time>
+          <div><h3 class="place">老街巷弄（示意）</h3><p class="description">沿著老屋與小巷走走，看到喜歡的店就停下來。</p></div>
+        </article>
+        <article class="stop">
+          <time class="time" datetime="13:00">13:00</time>
+          <div><h3 class="place">府城午餐小館（示意）</h3><p class="description">挑幾道台南味的家常菜，坐下來好好吃一頓。</p></div>
+        </article>
+        <article class="stop">
+          <time class="time" datetime="15:30">15:30</time>
+          <div><h3 class="place">樹下旅店（示意）</h3><p class="description">先辦理入住、稍微休息，再出門尋找晚餐。</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="day" aria-labelledby="day-two-title">
+      <div class="day-heading">
+        <div class="day-number">第二<br>天</div>
+        <div>
+          <h2 id="day-two-title">慢遊收尾日</h2>
+          <p class="day-subtitle">睡飽再出發，帶著甜點回家</p>
+        </div>
+      </div>
+      <div class="stops">
+        <article class="stop">
+          <time class="time" datetime="09:00">09:00</time>
+          <div><h3 class="place">巷口豆漿店（示意）</h3><p class="description">用熱呼呼的早餐開場，今天一樣不用趕時間。</p></div>
+        </article>
+        <article class="stop">
+          <time class="time" datetime="10:30">10:30</time>
+          <div><h3 class="place">河畔散步公園（示意）</h3><p class="description">吹吹風、拍拍照，享受旅行裡悠閒的空檔。</p></div>
+        </article>
+        <article class="stop">
+          <time class="time" datetime="12:30">12:30</time>
+          <div><h3 class="place">小巷午餐食堂（示意）</h3><p class="description">找間舒服的小店吃午餐，補足回程前的體力。</p></div>
+        </article>
+        <article class="stop">
+          <time class="time" datetime="14:30">14:30</time>
+          <div><h3 class="place">甜甜伴手禮舖（示意）</h3><p class="description">買點喜歡的甜點或伴手禮，為這趟小旅行收尾。</p></div>
+        </article>
+      </div>
+    </section>
+
+
+    <section class="day" aria-labelledby="reminder-title">
+      <div class="day-heading">
+        <div class="day-number">出發<br>前</div>
+        <div>
+          <h2 id="reminder-title">行前提醒</h2>
+          <p class="day-subtitle">出發前一起確認一下</p>
+        </div>
+      </div>
+      <div class="stops">
+        <article class="stop">
+          <div class="time">天氣</div>
+          <div><h3 class="place">晴時多雲（示意）</h3><p class="description">記得出發前再看一次天氣預報。</p></div>
+        </article>
+        <article class="stop">
+          <div class="time">攜帶</div>
+          <div><h3 class="place">水壺、雨傘、行動電源（示意）</h3><p class="description">帶上日常用品，輕便出門就好。</p></div>
+        </article>
+        <article class="stop">
+          <div class="time">集合</div>
+          <div><h3 class="place">上午 09:00 車站出口（示意）</h3><p class="description">提早幾分鐘到，大家碰面後一起出發。</p></div>
+        </article>
+      </div>
+    </section>
+    <footer>時間先當作參考，留白一點，旅程更自在。</footer>
+  </main>
+</body>
+</html>
+
+
